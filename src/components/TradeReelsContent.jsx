@@ -10,7 +10,8 @@ const REELS_DATA = [
       "Investors have high confidence.",
       "Economy is usually strong and growing."
     ],
-    bg: "#118AB2, #06D6A0", /* green/blue gradient */
+    bg: "from-blue-100 to-green-100",
+    border: "border-green-200",
     emoji: "🐂"
   },
   {
@@ -21,7 +22,8 @@ const REELS_DATA = [
       "Pessimism and fear among investors.",
       "Economy might be slowing down."
     ],
-    bg: "#FF6B35, #FF8C61", /* orange gradient */
+    bg: "from-orange-100 to-red-100",
+    border: "border-orange-200",
     emoji: "🐻"
   },
   {
@@ -32,7 +34,8 @@ const REELS_DATA = [
       "Benefit from Rupee Cost Averaging.",
       "Takes the emotion out of investing."
     ],
-    bg: "#7B5EA7, #FF6B9D", /* purple/pink gradient */
+    bg: "from-purple-100 to-pink-100",
+    border: "border-purple-200",
     emoji: "💰"
   },
   {
@@ -43,7 +46,8 @@ const REELS_DATA = [
       "Financially sound and historically stable.",
       "Often pay consistent dividends."
     ],
-    bg: "#FFD60A, #FF6B35", /* yellow/orange gradient */
+    bg: "from-yellow-100 to-orange-100",
+    border: "border-yellow-200",
     emoji: "🏢"
   }
 ];
@@ -69,7 +73,7 @@ export default function TradeReelsContent({ coins, setCoins }) {
   };
 
   return (
-    <div className="h-[calc(100vh-130px)] w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar pb-20">
+    <div className="h-[calc(100vh-130px)] md:h-[calc(100vh-80px)] w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar pb-20 md:pb-8">
       {REELS_DATA.map((reel, index) => (
         <div 
           key={reel.id} 
@@ -77,24 +81,20 @@ export default function TradeReelsContent({ coins, setCoins }) {
         >
           {/* Main Card */}
           <div 
-            className="clay-card w-full max-w-sm p-6 flex flex-col items-center justify-between mx-auto"
-            style={{ 
-              minHeight: '420px', 
-              background: `linear-gradient(135deg, ${reel.bg})` 
-            }}
+            className={`clay-card bg-gradient-to-br ${reel.bg} border-2 ${reel.border} w-full max-w-sm p-6 flex flex-col items-center justify-between mx-auto min-h-[420px] md:min-h-[520px] shadow-sm hover:shadow-xl hover:shadow-primary/10 transition-all cursor-pointer group`}
           >
             {/* Reel Header */}
-            <div className="text-6xl mb-6 animate-float">{reel.emoji}</div>
+            <div className="text-6xl mb-6 animate-float transition-transform group-hover:scale-110 duration-300">{reel.emoji}</div>
             
-            <h2 className="text-2xl font-black text-white text-center mb-6 leading-tight drop-shadow-md">
+            <h2 className="text-2xl font-black text-slate-800 text-center mb-6 leading-tight drop-shadow-sm">
               {reel.title}
             </h2>
             
             {/* Learning Points */}
-            <ul className="text-white/95 text-sm space-y-4 mb-8 w-full">
+            <ul className="text-slate-700 text-sm space-y-4 mb-8 w-full">
               {reel.points.map((point, i) => (
-                <li key={i} className="flex items-start gap-3 bg-black/15 p-3.5 rounded-xl shadow-inner backdrop-blur-sm">
-                  <span className="text-[#FFD60A] shrink-0 mt-0.5"><CheckCircle size={18} /></span>
+                <li key={i} className="flex items-start gap-3 bg-white/60 p-3.5 rounded-xl shadow-sm border border-white/50 backdrop-blur-sm animate-pop_in" style={{ animationDelay: `${i * 100}ms` }}>
+                  <span className="text-brand-yellow shrink-0 mt-0.5"><CheckCircle size={18} /></span>
                   <span className="font-semibold leading-relaxed">{point}</span>
                 </li>
               ))}
@@ -106,10 +106,9 @@ export default function TradeReelsContent({ coins, setCoins }) {
               disabled={claimed[reel.id]}
               className={`btn-clay w-full py-3.5 justify-center text-[15px] transition-all duration-300 ${
                 claimed[reel.id] 
-                  ? 'bg-black/20 text-white/50 border-white/10 cursor-not-allowed shadow-none transform-none' 
-                  : 'text-[#141414] hover:scale-[1.02]'
+                  ? 'bg-slate-200 text-slate-500 border-slate-300 cursor-not-allowed shadow-none transform-none' 
+                  : 'bg-brand-yellow text-slate-900 border-brand-yellow/80 hover:scale-105 active:scale-95 shadow-xl shadow-brand-yellow/20'
               }`}
-              style={!claimed[reel.id] ? { background: 'linear-gradient(90deg,#FFD60A,#FF6B35)' } : {}}
             >
               {messages[reel.id] ? (
                 <span className="font-black flex items-center gap-2 drop-shadow-sm"><CheckCircle size={20} /> Success!</span>
@@ -123,7 +122,7 @@ export default function TradeReelsContent({ coins, setCoins }) {
           
           {/* Swipe Indicator */}
           {index < REELS_DATA.length - 1 && (
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/60 animate-bounce flex flex-col items-center gap-1">
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-slate-400 animate-bounce flex flex-col items-center gap-1">
               <span className="text-xs font-bold tracking-widest uppercase">Swipe</span>
               <ChevronDown size={28} />
             </div>

@@ -1,11 +1,17 @@
 import { useState } from 'react'
-import { Trophy, Star, ChevronRight, Zap, Target, CheckCircle2, XCircle } from 'lucide-react'
+import { 
+  Trophy, Star, ChevronRight, Zap, Target, 
+  CheckCircle2, XCircle, X, Camera, Coins, 
+  Settings, Moon, Shield, Award, Flame
+} from 'lucide-react'
 import arjunAvatar from '../assets/arjun.png'
 import priyaAvatar from '../assets/priya.png'
 
 export default function QuestContent({ coins, setCoins }) {
   const [showGstModal, setShowGstModal] = useState(false)
-  const [gstResult, setGstResult] = useState(null) // 'success' | 'fail' | null
+  const [showIncomeTaxModal, setShowIncomeTaxModal] = useState(false)
+  const [gstResult, setGstResult] = useState(null)
+  const [taxResult, setTaxResult] = useState(null)
 
   const handleGstAnswer = (answer) => {
     if (answer === '18%') {
@@ -21,171 +27,292 @@ export default function QuestContent({ coins, setCoins }) {
     setGstResult(null)
   }
 
+  const handleTaxAnswer = (answer) => {
+    if (answer === 'New Regime') {
+      setTaxResult('success')
+      setCoins(c => c + 100)
+    } else {
+      setTaxResult('fail')
+    }
+  }
+
+  const closeTaxModal = () => {
+    setShowIncomeTaxModal(false)
+    setTaxResult(null)
+  }
+
   return (
     <div className="pb-6 overflow-y-auto no-scrollbar animate-pop_in">
       
-      {/* ── User Profile Card ──────────────────────── */}
-      <section className="relative overflow-hidden mx-4 mt-4 rounded-3xl p-6 clay-card flex flex-col items-center"
-        style={{ background: 'linear-gradient(135deg, #1a0533 0%, #0d1f4f 50%, #001a3a 100%)' }}>
-        
-        {/* Decorative elements */}
-        <div className="absolute -top-10 -left-10 w-48 h-48 rounded-full opacity-20 blur-3xl bg-brand-pink" />
-        <div className="absolute -bottom-8 -right-8 w-40 h-40 rounded-full opacity-20 blur-3xl bg-brand-blue" />
-        
-        <div className="relative w-24 h-24 mb-4">
-          <div className="absolute inset-0 rounded-full bg-brand-yellow blur-md opacity-40 animate-pulse_glow" />
-          <img 
-            src={arjunAvatar} 
-            alt="Arjun Sharma Avatar" 
-            className="relative w-full h-full object-cover rounded-full border-4 border-white/20 shadow-clay"
-          />
-          <div className="absolute -bottom-2 -right-2 bg-brand-yellow text-[#141414] text-xs font-black px-2 py-1 rounded-full border-2 border-[#141414]">
-            Lvl 8
+      {/* ── Profile Header ──────────────────────── */}
+      <section className="bg-white p-6 rounded-xl border border-brand-yellow/5 shadow-sm mb-6 mt-4">
+        <div className="flex flex-col md:flex-row items-center gap-6">
+          <div className="relative group">
+            <div className="size-28 rounded-full overflow-hidden border-4 border-brand-yellow p-1 bg-white">
+              <img 
+                src={arjunAvatar} 
+                alt="Arjun" 
+                className="w-full h-full rounded-full object-cover"
+              />
+            </div>
+            <button className="absolute bottom-0 right-0 bg-brand-yellow text-slate-900 p-2 rounded-full shadow-lg hover:scale-110 transition-transform border-4 border-white flex items-center justify-center">
+              <Camera size={16} />
+            </button>
+          </div>
+          <div className="flex-1 text-center md:text-left">
+            <h1 className="text-2xl font-bold text-slate-900 flex items-center justify-center md:justify-start gap-2">
+              Pro Trader
+              <div className="bg-slate-900 text-brand-yellow text-xs font-black px-2 py-0.5 rounded-full shadow-md leading-none h-5 flex items-center">
+                Lvl 8
+              </div>
+            </h1>
+            <p className="text-slate-500 font-medium">trader@paisapathshala.com</p>
+            <div className="mt-4 flex flex-wrap justify-center md:justify-start gap-2">
+              <button className="px-6 py-2 bg-brand-yellow text-slate-900 font-bold rounded-full shadow-sm hover:scale-105 active:scale-95 transition-all">
+                Edit Profile
+              </button>
+              <button className="px-6 py-2 bg-brand-yellow/10 text-brand-yellow font-bold rounded-full hover:bg-brand-yellow/20 transition-all">
+                Share Stats
+              </button>
+            </div>
           </div>
         </div>
-
-        <h2 className="text-2xl font-black text-white mb-1">Arjun Sharma</h2>
-        <p className="text-sm border border-brand-yellow/30 bg-brand-yellow/10 text-brand-yellow px-3 py-1 rounded-full flex items-center gap-1 font-semibold">
-          <Star size={14} className="fill-brand-yellow" /> Rising Investor
-        </p>
       </section>
 
-      {/* ── Active Quests Header ───────────────────── */}
-      <div className="flex items-center justify-between px-5 mt-7 mb-3">
-        <h2 className="text-base font-bold text-white flex items-center gap-2">
-          <Trophy size={18} className="text-brand-yellow" /> Active Quests
-        </h2>
-        <span className="text-xs text-white/40">Daily goals</span>
-      </div>
-
-      {/* ── Quests Container ───────────────────────── */}
-      <div className="px-4 flex flex-col gap-4">
+      {/* ── Settings Grid: Stats & Quests ───────────────────── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         
-        {/* GST Hero Quest */}
-        <div 
-          onClick={() => setShowGstModal(true)}
-          className="clay-card p-4 relative overflow-hidden cursor-pointer hover:scale-[1.02] transition-transform"
-          style={{ background: 'linear-gradient(135deg, #FF6B35 0%, #FF8C61 100%)' }}>
-          
-          <div className="absolute -right-4 -top-4 opacity-20">
-            <Zap size={80} className="text-white" />
-          </div>
-          
-          <div className="relative z-10 flex gap-4 items-center">
-            <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0 shadow-clay-sm">
-              <span className="text-2xl">🍦</span>
+        {/* Account & Progress Details */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-bold px-2 flex items-center gap-2 text-slate-900">
+            <Settings className="text-brand-yellow" size={20} />
+            Account Stats
+          </h3>
+          <div className="bg-white rounded-xl overflow-hidden border border-brand-yellow/5 shadow-sm">
+            <div className="p-4 hover:bg-brand-yellow/5 transition-colors flex items-center justify-between cursor-pointer group">
+              <div className="flex items-center gap-3">
+                <Coins className="text-slate-400 group-hover:text-brand-yellow" size={20} />
+                <div>
+                  <p className="font-bold text-slate-900">Total Coins</p>
+                  <p className="text-xs text-brand-orange font-bold font-mono">🪙 {coins.toLocaleString()}</p>
+                </div>
+              </div>
+              <ChevronRight className="text-slate-300 transform group-hover:translate-x-1 transition-transform" />
             </div>
-            <div className="flex-1">
-              <h3 className="text-white font-bold text-base leading-tight">GST Hero Quest</h3>
-              <p className="text-white/80 text-xs mt-1">Answer 1 question &bull; 🪙 50</p>
+            <div className="p-4 hover:bg-brand-yellow/5 transition-colors border-t border-slate-100 flex items-center justify-between cursor-pointer group">
+              <div className="flex items-center gap-3">
+                <Trophy className="text-slate-400 group-hover:text-brand-yellow" size={20} />
+                <div>
+                  <p className="font-bold text-slate-900">Current Rank</p>
+                  <p className="text-xs text-slate-500 font-semibold flex items-center gap-1">
+                    <Star size={12} className="fill-brand-yellow text-brand-yellow" /> Rising Investor
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="text-slate-300 transform group-hover:translate-x-1 transition-transform" />
             </div>
-            <ChevronRight className="text-white opacity-80" />
           </div>
         </div>
 
-        {/* Income Tax Sprint */}
-        <div className="clay-card p-4 relative overflow-hidden"
-          style={{ background: 'linear-gradient(135deg, #118AB2 0%, #06D6A0 100%)' }}>
-          
-          <div className="absolute -right-4 -bottom-4 opacity-20">
-            <Target size={80} className="text-white" />
-          </div>
+        {/* Active Quests (Notifications Style) */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-bold px-2 flex items-center gap-2 text-slate-900">
+            <Flame className="text-brand-yellow" size={20} />
+            Daily Quests
+          </h3>
+          <div className="bg-white rounded-xl overflow-hidden border border-brand-yellow/5 shadow-sm p-2 flex flex-col gap-1">
 
-          <div className="relative z-10">
-            <div className="flex justify-between items-start mb-3">
-              <div>
-                <h3 className="text-white font-bold text-base leading-tight mb-1">Income Tax Sprint</h3>
-                <p className="text-white/80 text-xs">Old vs New Regime</p>
-              </div>
-              
-              {/* Mentor badge */}
-              <div className="flex items-center gap-2 bg-[#001a3a]/40 p-1.5 pr-3 rounded-full border border-white/10 shadow-clay-sm">
-                <img src={priyaAvatar} alt="Priya K" className="w-6 h-6 rounded-full object-cover border border-white/20" />
-                <div className="flex flex-col">
-                  <span className="text-[9px] font-black text-white leading-none">Priya K.</span>
-                  <span className="text-[8px] text-brand-yellow leading-none mt-0.5">Equity Expert</span>
+            {/* GST Hero Quest Item */}
+            <div 
+              onClick={() => setShowGstModal(true)}
+              className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-colors cursor-pointer group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center group-hover:scale-110 transition-transform text-xl">
+                  🍦
+                </div>
+                <div>
+                  <p className="font-bold text-slate-900">GST Hero</p>
+                  <p className="text-xs font-semibold text-slate-500">+50 Coins • Quick Quiz</p>
                 </div>
               </div>
+              <button className="px-3 py-1 bg-brand-yellow/10 text-brand-yellow text-xs font-bold rounded-full group-hover:bg-brand-yellow group-hover:text-slate-900 transition-colors">
+                Play
+              </button>
             </div>
 
-            {/* Progress Bar */}
-            <div className="mt-4">
-              <div className="flex justify-between text-xs font-semibold text-white/90 mb-1.5">
-                <span>Progress</span>
-                <span>65%</span>
-              </div>
-              <div className="h-2.5 w-full bg-black/20 rounded-full overflow-hidden border border-white/10">
-                <div className="h-full bg-brand-yellow rounded-full relative" style={{ width: '65%' }}>
-                  <div className="absolute inset-0 bg-white/20 shimmering" />
+            {/* Income Tax Sprint Item */}
+            <div 
+              onClick={() => setShowIncomeTaxModal(true)}
+              className="flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 border border-transparent hover:border-slate-100 transition-colors cursor-pointer group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center group-hover:scale-110 transition-transform text-xl">
+                  📄
+                </div>
+                <div>
+                  <p className="font-bold text-slate-900">Tax Sprint</p>
+                  <p className="text-xs font-semibold text-slate-500">+100 Coins • Assessment</p>
                 </div>
               </div>
+              <button className="px-3 py-1 bg-brand-yellow/10 text-brand-yellow text-xs font-bold rounded-full group-hover:bg-brand-yellow group-hover:text-slate-900 transition-colors">
+                Play
+              </button>
             </div>
+
           </div>
         </div>
 
       </div>
 
-      {/* ── GST Quiz Modal ───────────────────────── */}
-      {showGstModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-pop_in">
-          <div className="w-full max-w-sm clay-card p-6 relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #1a0533 0%, #0d1f4f 100%)' }}>
-            
-            {!gstResult ? (
-              <>
-                <div className="w-14 h-14 bg-brand-orange/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-brand-orange/40 shadow-clay-sm animate-float">
-                  <span className="text-3xl">🍦</span>
+      {/* ── App Preferences ───────────────────────── */}
+      <section className="space-y-4 mb-6">
+        <h3 className="text-lg font-bold px-2 flex items-center gap-2 text-slate-900">
+          <Settings className="text-brand-yellow" size={20} />
+          App Preferences
+        </h3>
+        <div className="bg-white rounded-xl border border-brand-yellow/5 shadow-sm p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="flex items-start gap-4">
+              <div className="bg-brand-yellow/10 p-3 rounded-lg">
+                <Moon className="text-brand-yellow" size={20} />
+              </div>
+              <div className="flex-1">
+                <p className="font-bold text-slate-900">Appearance</p>
+                <p className="text-sm text-slate-500 mb-3 font-medium">Choose your visual style</p>
+                <div className="flex gap-2">
+                  <button className="px-4 py-1.5 rounded-full border-2 border-brand-yellow bg-brand-yellow text-slate-900 text-xs font-black shadow-sm">Light</button>
+                  <button className="px-4 py-1.5 rounded-full border-2 border-slate-200 text-slate-500 text-xs font-semibold hover:border-brand-yellow transition-colors">Dark</button>
+                  <button className="px-4 py-1.5 rounded-full border-2 border-slate-200 text-slate-500 text-xs font-semibold hover:border-brand-yellow transition-colors">System</button>
                 </div>
-                <h3 className="text-xl font-bold text-white text-center mb-2">GST Check</h3>
-                <p className="text-sm text-white/70 text-center mb-5">
-                  Which GST slab applies to Ice Cream?
-                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-4">
+              <div className="bg-brand-yellow/10 p-3 rounded-lg">
+                <Shield className="text-brand-yellow" size={20} />
+              </div>
+              <div className="flex-1">
+                <p className="font-bold text-slate-900">Privacy &amp; Security</p>
+                <p className="text-sm text-slate-500 mb-3 font-medium">Manage your data and login</p>
+                <button className="text-brand-orange text-sm font-bold flex items-center gap-1 hover:underline group">
+                  Manage Privacy <ChevronRight className="group-hover:translate-x-1 transition-transform" size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-                <div className="grid grid-cols-2 gap-3">
+      {/* ── Community Mentors ───────────────────────── */}
+      <section className="space-y-4 mb-4">
+        <h3 className="text-lg font-bold px-2 flex items-center gap-2 text-slate-900">
+          <Award className="text-brand-yellow" size={20} />
+          Your Mentors
+        </h3>
+        <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+          
+          <div className="min-w-[160px] bg-white p-4 rounded-xl text-center border border-brand-yellow/10 shadow-sm hover:-translate-y-1 transition-transform cursor-pointer">
+            <div className="w-16 h-16 rounded-full mx-auto mb-3 p-0.5 border-2 border-brand-yellow">
+              <img src={priyaAvatar} alt="Priya" className="w-full h-full rounded-full object-cover" />
+            </div>
+            <p className="font-bold text-slate-900">Priya K.</p>
+            <p className="text-xs font-semibold text-brand-yellow">Equity Expert</p>
+          </div>
+
+          <div className="min-w-[160px] bg-white p-4 rounded-xl text-center border border-brand-yellow/10 shadow-sm hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden">
+            <div className="w-16 h-16 rounded-full mx-auto mb-3 bg-slate-200 flex items-center justify-center">
+              <span className="text-2xl">👩‍💼</span>
+            </div>
+            <p className="font-bold text-slate-900">Anjali M.</p>
+            <p className="text-xs font-semibold text-brand-yellow">Tax Strategist</p>
+          </div>
+
+          <div className="min-w-[160px] bg-white p-4 rounded-xl text-center border border-brand-yellow/10 shadow-sm hover:-translate-y-1 transition-transform cursor-pointer">
+            <div className="w-16 h-16 rounded-full mx-auto mb-3 bg-slate-200 flex items-center justify-center">
+              <span className="text-2xl">👨‍🏫</span>
+            </div>
+            <p className="font-bold text-slate-900">Vikram R.</p>
+            <p className="text-xs font-semibold text-brand-yellow">Wealth Coach</p>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ── Footer ───────────────────────── */}
+      <div className="pt-6 pb-12 text-center space-y-4 border-t border-slate-200/60">
+        <p className="text-slate-400 font-medium text-xs">Paisa Pathshala v4.2.0 • Made with ❤️ for India</p>
+        <button className="text-red-500 font-bold border-2 border-red-500/20 px-8 py-2 rounded-full hover:bg-red-50 hover:border-red-500 transition-colors text-sm">
+          Logout Account
+        </button>
+      </div>
+
+      {showGstModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4 animate-in fade-in duration-200">
+          <div className="relative w-full max-w-sm clay-card bg-white p-8 !rounded-[2rem] shadow-2xl overflow-hidden">
+            {!gstResult && (
+              <button onClick={closeGstModal} className="absolute top-4 right-4 text-slate-500"><X size={18} /></button>
+            )}
+            {!gstResult ? (
+              <div className="flex flex-col items-center">
+                <div className="text-4xl mb-4">🍦</div>
+                <h3 className="text-2xl font-black mb-2">GST Check</h3>
+                <p className="text-slate-500 mb-6 w-full text-center">Which slab applies to Ice Cream?</p>
+                <div className="grid grid-cols-2 gap-3 w-full">
                   {['5%', '12%', '18%', '28%'].map(ans => (
-                    <button 
-                      key={ans}
-                      onClick={() => handleGstAnswer(ans)}
-                      className="py-3 rounded-xl bg-white/10 text-white font-bold border border-white/10 hover:bg-white/20 hover:border-brand-yellow transition-all"
-                    >
+                    <button key={ans} onClick={() => handleGstAnswer(ans)} className="py-3 bg-slate-50 rounded-xl font-bold border-2 border-slate-200 hover:border-brand-orange">
                       {ans}
                     </button>
                   ))}
                 </div>
-              </>
+              </div>
             ) : gstResult === 'success' ? (
               <div className="text-center py-4">
-                <CheckCircle2 size={64} className="text-brand-green mx-auto mb-4 animate-pop_in" />
-                <h3 className="text-2xl font-black text-white mb-2">Correct!</h3>
-                <p className="text-brand-yellow font-bold text-lg mb-4">+50 Coins</p>
-                <button 
-                  onClick={closeGstModal}
-                  className="w-full py-3 rounded-xl font-bold bg-brand-green text-[#141414] shadow-clay-sm"
-                >
-                  Awesome
-                </button>
+                <CheckCircle2 size={40} className="text-emerald-500 mx-auto mb-4" />
+                <h3 className="text-3xl font-black mb-2">Correct!</h3>
+                <button onClick={closeGstModal} className="w-full py-4 rounded-full font-black bg-emerald-500 text-white mt-4">Awesome</button>
               </div>
             ) : (
               <div className="text-center py-4">
-                <XCircle size={64} className="text-brand-orange mx-auto mb-4 animate-pop_in" />
-                <h3 className="text-2xl font-black text-white mb-2">Oops!</h3>
-                <p className="text-white/60 text-sm mb-4">Ice cream actually falls under the 18% slab.</p>
-                <button 
-                  onClick={closeGstModal}
-                  className="w-full py-3 rounded-xl font-bold bg-white/20 text-white shadow-clay-sm border border-white/20 hover:bg-white/30"
-                >
-                  Try Again
-                </button>
+                <XCircle size={40} className="text-rose-500 mx-auto mb-4" />
+                <h3 className="text-3xl font-black mb-2">Oops!</h3>
+                <button onClick={closeGstModal} className="w-full py-4 rounded-full font-black bg-slate-100 mt-4">Try Again</button>
               </div>
             )}
-            
-            {!gstResult && (
-              <button 
-                onClick={closeGstModal}
-                className="absolute top-3 right-3 text-white/40 hover:text-white"
-              >
-                ✕
-              </button>
+          </div>
+        </div>
+      )}
+
+      {showIncomeTaxModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-4 animate-in fade-in duration-200">
+          <div className="relative w-full max-w-sm clay-card bg-white p-8 !rounded-[2rem] shadow-2xl overflow-hidden">
+            {!taxResult && (
+              <button onClick={closeTaxModal} className="absolute top-4 right-4 text-slate-500"><X size={18} /></button>
+            )}
+            {!taxResult ? (
+              <div className="flex flex-col items-center">
+                <div className="text-4xl mb-4">📄</div>
+                <h3 className="text-2xl font-black mb-2">Tax Sprint</h3>
+                <div className="grid grid-cols-1 gap-3 w-full mt-4">
+                  {['Old Regime', 'New Regime'].map(ans => (
+                    <button key={ans} onClick={() => handleTaxAnswer(ans)} className="py-3 px-4 bg-slate-50 rounded-xl font-bold border-2 border-slate-200 hover:border-sky-500 text-left flex justify-between">
+                      {ans} <ChevronRight size={16}/>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : taxResult === 'success' ? (
+              <div className="text-center py-4">
+                <CheckCircle2 size={40} className="text-emerald-500 mx-auto mb-4" />
+                <h3 className="text-3xl font-black mb-2">Spot On!</h3>
+                <button onClick={closeTaxModal} className="w-full py-4 rounded-full font-black bg-emerald-500 text-white mt-4">Collect Loot</button>
+              </div>
+            ) : (
+              <div className="text-center py-4">
+                <XCircle size={40} className="text-rose-500 mx-auto mb-4" />
+                <h3 className="text-3xl font-black mb-2">Not Quite</h3>
+                <button onClick={closeTaxModal} className="w-full py-4 rounded-full font-black bg-slate-100 mt-4">Try Again</button>
+              </div>
             )}
           </div>
         </div>

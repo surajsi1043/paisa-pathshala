@@ -7,17 +7,22 @@ export default {
   theme: {
     extend: {
       fontFamily: {
+        display: ['Spline Sans', 'sans-serif'],
         sans: ['Inter', 'sans-serif'],
       },
       colors: {
         brand: {
-          yellow:  '#FFD60A',
+          yellow:  '#f2ad0d', /* Stonkpop Primary */
           orange:  '#FF6B35',
           green:   '#06D6A0',
           blue:    '#118AB2',
           purple:  '#7B5EA7',
           pink:    '#FF6B9D',
         },
+        stonkpop: {
+          light: '#f8f7f5',
+          dark: '#221d10'
+        }
       },
       boxShadow: {
         clay: '6px 6px 0px 0px rgba(0,0,0,0.18)',
