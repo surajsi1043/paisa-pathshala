@@ -228,12 +228,13 @@ export default function QuestContent({ coins, setCoins }) {
             <p className="text-xs font-semibold text-brand-yellow">Tax Strategist</p>
           </div>
 
-          <div className="min-w-[160px] bg-white p-4 rounded-xl text-center border border-brand-yellow/10 shadow-sm hover:-translate-y-1 transition-transform cursor-pointer">
-            <div className="w-16 h-16 rounded-full mx-auto mb-3 bg-slate-200 flex items-center justify-center">
-              <span className="text-2xl">👨‍🏫</span>
+          <div className="min-w-[160px] bg-gradient-to-br from-brand-yellow/20 to-orange-100 p-4 rounded-xl text-center border-2 border-brand-yellow/30 shadow-sm hover:-translate-y-1 transition-transform cursor-pointer relative overflow-hidden">
+            <div className="absolute top-2 right-2 text-[10px] font-black bg-brand-yellow text-slate-900 px-1.5 py-0.5 rounded-full">AI</div>
+            <div className="w-16 h-16 rounded-full mx-auto mb-3 bg-brand-yellow/20 border-2 border-brand-yellow/40 flex items-center justify-center">
+              <span className="text-2xl">🤖</span>
             </div>
-            <p className="font-bold text-slate-900">Vikram R.</p>
-            <p className="text-xs font-semibold text-brand-yellow">Wealth Coach</p>
+            <p className="font-bold text-slate-900">Wealth Guru</p>
+            <p className="text-xs font-semibold text-brand-yellow">AI Money Coach</p>
           </div>
 
         </div>

@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useTheme } from './context/ThemeContext'
 import {
   Home, BookOpen, TrendingUp, User,
   Coins, Zap, Star, Trophy, ArrowRight,
   BarChart2, Flame, PlayCircle, Target,
-  ChevronRight, Sparkles
+  ChevronRight, Sparkles, Sun, Moon, Monitor
 } from 'lucide-react'
 
 import TradeReelsContent from './components/TradeReelsContent'
@@ -12,6 +13,12 @@ import QuestContent from './components/QuestContent'
 
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import LandingPage from './pages/LandingPage'
+import LessonsListPage from './pages/LessonsListPage'
+import PaperTradeIntroPage from './pages/PaperTradeIntroPage'
+import QuestsBoardPage from './pages/QuestsBoardPage'
+import SmartPortfolioPage from './pages/SmartPortfolioPage'
+import DailyChallengesPage from './pages/DailyChallengesPage'
+import TrendingTopicsPage from './pages/TrendingTopicsPage'
 
 /* ══════════════════════════════════════════════════════
    MAIN DASHBOARD (HOME TAB)
@@ -26,6 +33,8 @@ function DashboardPage({ setTab }) {
       desc:  'Learn stocks in 60-second reels. No jargon, pure fun.',
       bg:    'from-[#FF6B35] to-[#FF8C61]',
       rotate: '-rotate-1',
+      tab:   'lessons-list',
+      color: '#FF6B35',
     },
     {
       icon: <BarChart2 size={28} className="text-brand-green" />,
@@ -33,6 +42,8 @@ function DashboardPage({ setTab }) {
       desc:  'Practice buying & selling with virtual ₹ — zero risk.',
       bg:    'from-[#118AB2] to-[#06D6A0]',
       rotate: 'rotate-1',
+      tab:   'paper-trade',
+      color: '#06D6A0',
     },
     {
       icon: <Trophy size={28} className="text-brand-yellow" />,
@@ -40,6 +51,8 @@ function DashboardPage({ setTab }) {
       desc:  'Complete daily quests, climb leaderboards, earn coins.',
       bg:    'from-[#7B5EA7] to-[#FF6B9D]',
       rotate: '-rotate-1',
+      tab:   'quests-board',
+      color: '#FF6B9D',
     },
     {
       icon: <Target size={28} className="text-white" />,
@@ -47,6 +60,8 @@ function DashboardPage({ setTab }) {
       desc:  'Get AI-powered suggestions tailored to your goals.',
       bg:    'from-[#FFD60A] to-[#FF6B35]',
       rotate: 'rotate-2',
+      tab:   'smart-portfolio',
+      color: '#FFD60A',
     },
   ]
 
@@ -129,25 +144,31 @@ function DashboardPage({ setTab }) {
         {POP_CARDS.map((c, i) => (
           <div
             key={i}
+            onClick={() => setTab(c.tab)}
             onMouseEnter={() => setHovered(i)}
             onMouseLeave={() => setHovered(null)}
             className={`clay-card bg-white border border-slate-200 shadow-sm p-4 cursor-pointer ${c.rotate}
-              ${hovered === i ? 'scale-105 shadow-xl shadow-brand-yellow/10' : ''} transition-all duration-300`}
-            style={hovered === i ? { borderTopColor: c.color } : {}}>
+              ${hovered === i ? 'scale-105 shadow-xl -translate-y-1' : 'active:scale-95'} transition-all duration-200`}
+            style={hovered === i ? { borderTopColor: c.color, borderTopWidth: '3px' } : {}}>
             <div className="w-10 h-10 rounded-2xl flex items-center justify-center mb-3 text-white"
                  style={{ background: `linear-gradient(135deg, ${c.bg.replace('from-[', '').replace('] to-[', ', ').replace(']', '')})` }}>
               {c.icon}
             </div>
             <p className="text-slate-900 font-bold text-sm leading-snug">{c.title}</p>
             <p className="text-slate-500 text-xs mt-1 leading-relaxed">{c.desc}</p>
+            <div className={`mt-3 flex items-center gap-1 text-xs font-bold transition-all duration-200
+              ${hovered === i ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-1'}`}
+              style={{ color: c.color }}>
+              Open <ChevronRight size={12} />
+            </div>
           </div>
         ))}
       </div>
 
       {/* ── Daily Challenge Banner ──────────────────────── */}
       <div
-        onClick={() => setTab('learn')}
-        className="mx-4 md:mx-0 mt-5 md:mt-8 clay-card p-4 md:p-6 flex items-center gap-4 cursor-pointer"
+        onClick={() => setTab('daily-challenge')}
+        className="mx-4 md:mx-0 mt-5 md:mt-8 clay-card p-4 md:p-6 flex items-center gap-4 cursor-pointer hover:scale-[1.01] active:scale-[0.99] transition-all"
         style={{ background: 'linear-gradient(135deg,#0d1f4f, #1a0533)' }}>
         <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 animate-pulse_glow"
           style={{ background: 'linear-gradient(135deg,#FFD60A,#FF6B35)' }}>
@@ -155,7 +176,7 @@ function DashboardPage({ setTab }) {
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-bold text-white text-sm">Daily Challenge 🔥</p>
-          <p className="text-xs text-white/50 truncate">3 questions · Earn +50 coins</p>
+          <p className="text-xs text-white/50 truncate">3 questions · Tap to start · Earn coins</p>
         </div>
         <ChevronRight size={20} className="text-brand-yellow flex-shrink-0" />
       </div>
@@ -174,8 +195,8 @@ function DashboardPage({ setTab }) {
         ].map((t, i) => (
           <button
             key={i}
-            onClick={() => setTab('learn')}
-            className="flex-shrink-0 btn-clay px-4 py-2 text-xs font-600 text-slate-900 bg-white shadow-sm"
+            onClick={() => setTab('trending-topics')}
+            className="flex-shrink-0 btn-clay px-4 py-2 text-xs font-600 text-slate-900 bg-white shadow-sm hover:scale-105 active:scale-95 transition-all"
             style={{ borderColor: `${t.color}55` }}>
             {t.emoji} {t.label}
           </button>
@@ -184,8 +205,8 @@ function DashboardPage({ setTab }) {
 
       {/* ── Learn More CTA ──────────────────────────────── */}
       <button
-        onClick={() => setTab('learn')}
-        className="btn-clay mx-4 md:mx-auto mt-6 md:mt-12 w-[calc(100%-2rem)] md:w-[400px] py-3 flex justify-center text-sm md:text-base font-bold text-slate-900"
+        onClick={() => setTab('lessons-list')}
+        className="btn-clay mx-4 md:mx-auto mt-6 md:mt-12 w-[calc(100%-2rem)] md:w-[400px] py-3 flex justify-center text-sm md:text-base font-bold text-slate-900 hover:scale-[1.02] active:scale-95 transition-all"
         style={{ background: 'linear-gradient(90deg,#FFD60A,#f2ad0d)' }}>
         Explore All Lessons <ArrowRight size={16} />
       </button>
@@ -204,15 +225,24 @@ const NAV_ITEMS = [
 ]
 
 function TopNav({ coins, tab, setTab }) {
+  const { theme, setTheme } = useTheme()
+
+  const THEME_OPTIONS = [
+    { key: 'light',  Icon: Sun,     label: 'Light'  },
+    { key: 'system', Icon: Monitor, label: 'System' },
+    { key: 'dark',   Icon: Moon,    label: 'Dark'   },
+  ]
+
   return (
     <header className="sticky top-0 z-50 flex items-center justify-between px-5 md:px-10 py-3 md:py-4
-      border-b border-slate-200 bg-stonkpop-light/95 backdrop-blur-md">
+      border-b border-slate-200 dark:border-[#3a342c]
+      bg-[#f8f7f5]/95 dark:bg-[#141210]/95 backdrop-blur-md transition-colors duration-300">
       {/* Logo */}
       <div className="flex items-center gap-2 cursor-pointer">
         <div className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black shadow-clay-sm bg-brand-yellow">
           ₹
         </div>
-        <span className="font-black text-slate-900 text-base md:text-xl tracking-tight hidden sm:block">
+        <span className="font-black text-slate-900 dark:text-[#f1ede8] text-base md:text-xl tracking-tight hidden sm:block">
           Paisa&nbsp;<span className="text-brand-yellow">Pathshala</span>
         </span>
       </div>
@@ -222,7 +252,11 @@ function TopNav({ coins, tab, setTab }) {
         {NAV_ITEMS.map(({ id, label, Icon }) => {
           const active = tab === id
           return (
-            <button key={id} onClick={() => setTab(id)} className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200 ${active ? 'bg-slate-200 text-brand-yellow font-bold shadow-clay-sm transform -translate-y-0.5' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'}`}>
+            <button key={id} onClick={() => setTab(id)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200
+                ${active
+                  ? 'bg-slate-200 dark:bg-[#2a2520] text-brand-yellow font-bold shadow-clay-sm -translate-y-0.5'
+                  : 'text-slate-500 dark:text-[#9e9188] hover:text-slate-800 dark:hover:text-[#f1ede8] hover:bg-slate-100 dark:hover:bg-[#1e1b18]'}`}>
               <Icon size={18} />
               <span className="text-sm">{label}</span>
             </button>
@@ -230,12 +264,30 @@ function TopNav({ coins, tab, setTab }) {
         })}
       </nav>
 
-      {/* Coin badge */}
-      <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold
-        border border-brand-yellow/30 animate-pulse_glow cursor-pointer"
-        style={{ background: 'rgba(255,214,10,0.12)' }}>
-        <Coins size={15} className="text-brand-yellow" />
-        <span className="text-brand-yellow">{coins.toLocaleString('en-IN')}</span>
+      <div className="flex items-center gap-2">
+        {/* 3-way theme toggle */}
+        <div className="flex items-center bg-slate-100 dark:bg-[#2a2520] rounded-full p-1 border border-slate-200 dark:border-[#3a342c] transition-colors">
+          {THEME_OPTIONS.map(({ key, Icon, label }) => (
+            <button
+              key={key}
+              title={label}
+              onClick={() => setTheme(key)}
+              className={`w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200
+                ${theme === key
+                  ? 'bg-white dark:bg-[#1e1b18] shadow-sm text-brand-yellow'
+                  : 'text-slate-400 dark:text-[#9e9188] hover:text-slate-600 dark:hover:text-[#f1ede8]'}`}>
+              <Icon size={14} />
+            </button>
+          ))}
+        </div>
+
+        {/* Coin badge */}
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold
+          border border-brand-yellow/30 animate-pulse_glow cursor-pointer"
+          style={{ background: 'rgba(255,214,10,0.12)' }}>
+          <Coins size={15} className="text-brand-yellow" />
+          <span className="text-brand-yellow">{coins.toLocaleString('en-IN')}</span>
+        </div>
       </div>
     </header>
   )
@@ -245,7 +297,8 @@ function TopNav({ coins, tab, setTab }) {
 function BottomNav({ tab, setTab }) {
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around
-      px-2 py-3 border-t border-slate-200 w-full bg-stonkpop-light/95 backdrop-blur-md">
+      px-2 py-3 border-t border-slate-200 dark:border-[#3a342c] w-full
+      bg-[#f8f7f5]/95 dark:bg-[#141210]/95 backdrop-blur-md transition-colors duration-300">
       {NAV_ITEMS.map(({ id, label, Icon }) => {
         const active = tab === id
         return (
@@ -257,9 +310,9 @@ function BottomNav({ tab, setTab }) {
             <Icon
               size={22}
               strokeWidth={active ? 2.5 : 1.8}
-              className={active ? 'text-brand-yellow' : 'text-slate-400'}
+            className={active ? 'text-brand-yellow' : 'text-slate-400 dark:text-[#9e9188]'}
             />
-            <span className={`text-[10px] font-semibold ${active ? 'text-brand-yellow' : 'text-slate-400'}`}>
+            <span className={`text-[10px] font-semibold ${active ? 'text-brand-yellow' : 'text-slate-400 dark:text-[#9e9188]'}`}>
               {label}
             </span>
             {active && (
@@ -280,17 +333,34 @@ export function MainApp() {
   const [coins, setCoins] = useState(12500)
   const [portfolio, setPortfolio] = useState({ AAPL: 0, BTC: 0 })
 
+  // Inject Wealth Guru AI agent only when inside the app (post-login)
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.src = 'https://cdn.jotfor.ms/agent/embedjs/019cea76aa4e7a3d9533fd8350e694e02844/embed.js'
+    script.async = true
+    document.body.appendChild(script)
+    return () => {
+      document.body.removeChild(script)
+    }
+  }, [])
+
   return (
-    <div className="min-h-screen w-full relative flex flex-col bg-stonkpop-light transition-colors duration-300">
+    <div className="min-h-screen w-full relative flex flex-col bg-[#f8f7f5] dark:bg-[#141210] transition-colors duration-300">
       <TopNav coins={coins} tab={tab} setTab={setTab} />
 
       {/* ── Page content ────────────────────────────── */}
       <main className="flex-1 overflow-y-auto no-scrollbar max-w-[1200px] mx-auto w-full md:pb-8" style={{ paddingBottom: '5rem' }}>
 
-        {tab === 'home'    && <DashboardPage setTab={setTab} />}
-        {tab === 'learn'   && <TradeReelsContent  coins={coins} setCoins={setCoins} />}
-        {tab === 'trade'   && <TradeMachineContent coins={coins} setCoins={setCoins} portfolio={portfolio} setPortfolio={setPortfolio} />}
-        {tab === 'profile' && <QuestContent        coins={coins} setCoins={setCoins} />}
+        {tab === 'home'           && <DashboardPage setTab={setTab} />}
+        {tab === 'learn'          && <TradeReelsContent  coins={coins} setCoins={setCoins} />}
+        {tab === 'trade'          && <TradeMachineContent coins={coins} setCoins={setCoins} portfolio={portfolio} setPortfolio={setPortfolio} />}
+        {tab === 'profile'        && <QuestContent        coins={coins} setCoins={setCoins} />}
+        {tab === 'lessons-list'    && <LessonsListPage      setTab={setTab} coins={coins} setCoins={setCoins} />}
+        {tab === 'paper-trade'     && <PaperTradeIntroPage  setTab={setTab} />}
+        {tab === 'quests-board'    && <QuestsBoardPage      setTab={setTab} coins={coins} setCoins={setCoins} />}
+        {tab === 'smart-portfolio' && <SmartPortfolioPage   setTab={setTab} coins={coins} />}
+        {tab === 'daily-challenge' && <DailyChallengesPage  setTab={setTab} coins={coins} setCoins={setCoins} />}
+        {tab === 'trending-topics' && <TrendingTopicsPage   setTab={setTab} />}
 
       </main>
 

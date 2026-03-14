@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { PlayCircle, Coins, CheckCircle, ChevronDown } from 'lucide-react';
 
 const REELS_DATA = [
@@ -49,12 +49,124 @@ const REELS_DATA = [
     bg: "from-yellow-100 to-orange-100",
     border: "border-yellow-200",
     emoji: "🏢"
-  }
+  },
+  {
+    id: 5,
+    title: "What is an IPO?",
+    points: [
+      "IPO = Initial Public Offering — a company goes public.",
+      "Investors can buy shares before they hit the exchange.",
+      "High demand IPOs can list at a big premium on Day 1."
+    ],
+    bg: "from-sky-100 to-indigo-100",
+    border: "border-sky-200",
+    emoji: "🚀"
+  },
+  {
+    id: 6,
+    title: "P/E Ratio Explained",
+    points: [
+      "Price-to-Earnings ratio = Stock Price ÷ Earnings per Share.",
+      "Low P/E may mean undervalued; high P/E may mean overvalued.",
+      "Always compare P/E within the same industry."
+    ],
+    bg: "from-teal-100 to-cyan-100",
+    border: "border-teal-200",
+    emoji: "📊"
+  },
+  {
+    id: 7,
+    title: "Mutual Funds 101",
+    points: [
+      "Pool money from many investors to buy a diversified basket.",
+      "Managed by professional fund managers.",
+      "Equity, Debt, and Hybrid are the main types."
+    ],
+    bg: "from-violet-100 to-fuchsia-100",
+    border: "border-violet-200",
+    emoji: "🧺"
+  },
+  {
+    id: 8,
+    title: "What are Dividends?",
+    points: [
+      "A share of a company's profits paid to shareholders.",
+      "Usually distributed quarterly or annually.",
+      "Reinvesting dividends accelerates compounding growth."
+    ],
+    bg: "from-lime-100 to-emerald-100",
+    border: "border-lime-200",
+    emoji: "💸"
+  },
+  {
+    id: 9,
+    title: "FD vs SIP — Which Wins?",
+    points: [
+      "FD offers fixed, guaranteed returns (~6-7% today).",
+      "SIP in equity mutual funds can yield 12-15% long-term.",
+      "SIP beats FD over 10+ years, but has short-term risk."
+    ],
+    bg: "from-amber-100 to-yellow-100",
+    border: "border-amber-200",
+    emoji: "⚔️"
+  },
+  {
+    id: 10,
+    title: "Inflation: The Silent Thief",
+    points: [
+      "Inflation erodes the purchasing power of your money.",
+      "At 6% inflation, ₹100 today is worth ₹74 in 5 years.",
+      "Investing above the inflation rate is the only escape."
+    ],
+    bg: "from-rose-100 to-pink-100",
+    border: "border-rose-200",
+    emoji: "🔥"
+  },
+  {
+    id: 11,
+    title: "Diversification: Don't put all eggs in one basket",
+    points: [
+      "Spread investments across stocks, bonds, gold & real estate.",
+      "Reduces risk — one bad asset won't sink your portfolio.",
+      "Target 8-15 stocks across different sectors for balance."
+    ],
+    bg: "from-orange-100 to-amber-100",
+    border: "border-orange-200",
+    emoji: "🥚"
+  },
+  {
+    id: 12,
+    title: "The Magic of Compounding",
+    points: [
+      "Compounding = earning returns on your returns.",
+      "₹10,000 at 12% for 20 years grows to ₹96,000+!",
+      "Start early — even 5 extra years doubles your outcome."
+    ],
+    bg: "from-green-100 to-teal-100",
+    border: "border-green-200",
+    emoji: "✨"
+  },
 ];
 
 export default function TradeReelsContent({ coins, setCoins }) {
   const [claimed, setClaimed] = useState({});
   const [messages, setMessages] = useState({});
+  const scrollRef = useRef(null);
+
+  // Auto-focus the scroll container so arrow keys work immediately
+  useEffect(() => { scrollRef.current?.focus(); }, []);
+
+  const handleKeyDown = (e) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      el.scrollBy({ top: el.clientHeight, behavior: 'smooth' });
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      el.scrollBy({ top: -el.clientHeight, behavior: 'smooth' });
+    }
+  };
 
   const handleClaim = (id) => {
     if (claimed[id]) return;
@@ -73,7 +185,12 @@ export default function TradeReelsContent({ coins, setCoins }) {
   };
 
   return (
-    <div className="h-[calc(100vh-130px)] md:h-[calc(100vh-80px)] w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar pb-20 md:pb-8">
+    <div
+      ref={scrollRef}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      className="h-[calc(100vh-130px)] md:h-[calc(100vh-80px)] w-full overflow-y-scroll snap-y snap-mandatory no-scrollbar pb-20 md:pb-8 outline-none focus:outline-none"
+    >
       {REELS_DATA.map((reel, index) => (
         <div 
           key={reel.id} 
